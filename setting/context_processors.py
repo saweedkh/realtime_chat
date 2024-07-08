@@ -4,7 +4,6 @@ from setting.models import (
     SocialMediaSetting,
     PhoneNumber
 )
-from pages.models import About
 
 
 def global_settings(request):

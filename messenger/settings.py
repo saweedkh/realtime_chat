@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jse+7s$a2n2+e@f+@_zso2kg(kzu7x039#(8(vffpanp(7+3v)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -31,12 +32,32 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    
+    # local apps
+    'account',
+    'setting',
+    'seo',
+    'utils',
+    'chat',
+    
+    # Third Party Packages
+    'imagekit',
+    'ckeditor',
+    'ckeditor_uploader',
+    'auditlog',
+    'colorfield',
+    'dynamic_raw_id',
+    'adminsortable2',
+    'jalali_date',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +68,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Third Party Packages
+    'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'chat.urls'
@@ -54,7 +77,7 @@ ROOT_URLCONF = 'chat.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,7 +90,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'chat.wsgi.application'
+ASGI_APPLICATION = 'chat.asgi.application'
 
 
 # Database
@@ -78,6 +101,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'topcer',
+    #     'USER': 'root',
+    #     'PASSWORD': 'nXQqclF7WGC8aU6YmKlGHTHv',
+    #     'HOST': 'database',
+    # }
 }
 
 
@@ -103,9 +133,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -116,8 +146,73 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    'static/',
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# AUTHENTICATION USER MODEL
+AUTH_USER_MODEL = 'account.User'
+
+# Django auditlog
+AUDITLOG_INCLUDE_ALL_MODELS = True
+AUDITLOG_DISABLE_ON_RAW_SAVE = False
+
+# Django Admin Interface  Configurations
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
+
+# CKEditor  Configurations
+CKEDITOR_BASEPATH = f"{STATIC_URL}ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BROWSE_SHOW_DIRS = True
+CKEDITOR_RESTRICT_BY_DATE = True
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_THUMBNAIL_SIZE = (800, 600)
+CKEDITOR_IMAGE_QUALITY = 70
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'office2013',
+        'toolbar': 'full',
+        'width': 'full',
+        'extraPlugins': ','.join(['html5video', ]),
+    },
+    'basic': {
+        'skin': 'office2013',
+        'toolbar': 'Custom',
+        'width': 'full',
+        'height': '100',
+        'extraPlugins': ','.join(['html5video', ]),
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+             'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source'],
+            ['Table', 'Image', 'Html5video', ],
+            ['Maximize', ]
+        ]
+    }
+}
+
+
+# Override Local Setting
+try:
+    if os.environ.get('DJANGO_DEVELOPMENT'):
+        from chat.local_settings import *
+except ModuleNotFoundError:
+    pass

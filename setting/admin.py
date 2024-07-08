@@ -14,9 +14,6 @@ from .models import (
 from account.models import User
 from utils.admin import DateTimeAdminMixin
 
-# Third Party Apps
-from modeltranslation.admin import TranslationAdmin, TranslationInlineModelAdmin, TabbedTranslationAdmin
-
 
 class PhoneAdmin(admin.TabularInline):
     model = PhoneNumber
@@ -33,7 +30,7 @@ class HomePageSliderAdmin(admin.TabularInline):
 
 
 @admin.register(SiteGlobalSetting)
-class SiteGlobalSettingAdmin(TabbedTranslationAdmin):
+class SiteGlobalSettingAdmin(admin.ModelAdmin):
     fieldsets = (
         (_('عمومی'), {'fields': (
             'name', 'slogan', 'copyright', 'video',
@@ -69,7 +66,7 @@ class SiteGlobalSettingAdmin(TabbedTranslationAdmin):
 
 
 @admin.register(SocialMediaSetting)
-class SocialMediaSettingAdmin(TabbedTranslationAdmin):
+class SocialMediaSettingAdmin(admin.ModelAdmin):
     readonly_fields = (*DateTimeAdminMixin.readonly_fields,)
     list_display = ('name',)
     search_fields = ('name',)
