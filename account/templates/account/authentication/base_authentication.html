@@ -1,0 +1,115 @@
+{% load static %}
+{% load utils %}
+{% load i18n %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>{% block title %}
+    
+      {% endblock title %}</title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.rtl.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/swiper/swiper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos/aos.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+
+</head>
+<body>
+
+    <main>
+      <div class="login-section position-relative min-vh-100" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="1000" data-aos-delay="0" data-aos-once="true">
+
+        {% block content %}{% endblock content %}
+        <div class="bottom-bar bg-bgDark py-lg-8 py-4">
+          <div class="container d-flex align-items-center justify-content-xl-between justify-content-center">
+              <a class="return fs-7 fw-semibold text-white text-opacity-40 d-flex align-items-center" href={% url "pages:home" %}>
+                  <div class="icon rounded-1 bg-white bg-opacity-5 d-flex align-items-center justify-content-center me-3">
+                      <i class="icon-right fs-6 fw-bold"></i>
+                  </div>
+                  {% trans "صفحه اصلی" %}
+              </a>
+              <ul class="nav nav-menu d-xl-flex d-none">
+    
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "pages:about_us" %}>
+                          {% trans "درباره ما" %}
+                      </a>
+                  </li>
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "pages:terms" %}>
+                          {% trans "قوانین و مقررات" %}
+                      </a>
+                  </li>
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "blog:blog" %}>
+                          {% trans "اخبار و رویداد" %}
+                      </a>
+                  </li>
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "pages:contact_us" %}>
+                          {% trans "تماس با ما" %}
+                      </a>
+                  </li>
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href="/fa/Gallery">
+                          {% trans "نگارخانه" %}
+                      </a>
+                  </li>
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "units:units" %}>
+                          {% trans "واحدهای فعال" %}
+                      </a>
+                  </li>
+
+                  <li class="nav-item position-relative">
+                      <a class="nav-link fs-7 fw-semibold text-white text-opacity-40 block py-1 px-3" href={% url "account:login" %}>
+                          {% trans "ورود" %}
+                      </a>
+                  </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/Bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/swiper/swiper.min.js' %}"></script>
+    <script src="{% static 'js/Select2/select2.min.js' %}"></script>
+    <script src="{% static 'js/aos/aos.js' %}"></script>
+
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+
+    <script>
+        AOS.init({});
+    </script>
+
+    <script>
+        $('.toggle-visible').click(function (){
+          let input = $(this).parent().find('input')
+          if(input[0].type === "password"){
+            $(this).toggleClass("text-light text-dark")
+            input[0].type = "text"
+          }else {
+            $(this).toggleClass("text-light text-dark")
+            input[0].type = "password"
+          }
+        })
+    </script>
+
+    
+<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+{% block js %}{% endblock js %}
+</body>
+</html>

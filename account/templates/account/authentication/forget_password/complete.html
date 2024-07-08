@@ -1,0 +1,76 @@
+{% extends "account/authentication/base_authentication.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+    {% trans "بازیابی رمزعبور" %}
+{% endblock title %}
+
+{% block content %}
+<div class="main-bar">
+    <div class="container d-flex  align-items-center flex-column">
+        {% if global_settings.logo %}
+            <a class="block" href="{% url 'pages:home' %}" style='max-width:200px'>
+                <img src={{global_settings.logo.url}} alt="" class="img-brand block">
+            </a>
+        {% endif %}
+
+        <form method="post" >
+            {% csrf_token %}
+            <h2 class="header-section text-lighter mb-4">
+                <img src="/assets/img/header-section-shape.png" alt="">
+                {% trans "تغییر رمزعبور" %}
+            </h2>
+            
+
+            {% include "inc/messages.html" %}
+
+            <div class="form-group mb-3">
+              <label class="fs-8 text-dark d-flex align-items-center mb-2" for="password1">
+                  {% trans "کلمه عبور جدید" %}
+              </label>
+              <div class="w-100 position-relative">
+                  <i class="icon-padlock fs-9 text-light position-absolute top-50 translate-middle-y start-0 ms-3"></i>
+                  <input class="w-100 rounded-2 bg-white border-0 ps-10" type="password" data-val="true" data-val-maxlength="لطفاً حداکثر 50 کارکتر وارد کنید" data-val-maxlength-max="50" data-val-required="کلمه عبور اجباری می باشد" id="password1" maxlength="50" name="password1">
+                  <span class="text-danger field-validation-valid" data-valmsg-for="password1" data-valmsg-replace="true"></span>
+                  <i class="icon-eye toggle-visible text-light position-absolute top-50 translate-middle-y end-0 me-3"></i>
+              </div>
+          </div>
+
+
+          <div class="form-group mb-3">
+              <label class="fs-8 text-dark d-flex align-items-center mb-2" for="password2">
+                  {% trans "تکرار کلمه عبور" %}
+              </label>
+              <div class="w-100 position-relative">
+                  <i class="icon-padlock fs-9 text-light position-absolute top-50 translate-middle-y start-0 ms-3"></i>
+                  <input class="w-100 rounded-2 bg-white border-0 ps-10" type="password" data-val="true" data-val-maxlength="لطفاً حداکثر 50 کارکتر وارد کنید" data-val-maxlength-max="50" data-val-required="کلمه عبور اجباری می باشد" id="password2" maxlength="50" name="password2">
+                  <span class="text-danger field-validation-valid" data-valmsg-for="password2" data-valmsg-replace="true"></span>
+                  <i class="icon-eye toggle-visible text-light position-absolute top-50 translate-middle-y end-0 me-3"></i>
+              </div>
+          </div>
+
+
+            <button class="btn btn-primary fw-bold w-100 text-white d-flex align-items-center justify-content-center">
+                {% trans "تغییر رمزعبور" %}
+                <i class="icon-left-arrow ms-2"></i>
+            </button>
+            <div class="form-group mt-5">
+                <p>
+                    {% trans "حساب کاربری دارید؟" %}
+                    <a class="d-inline-block" href="{% url 'account:login' %}">{% trans "ورود به سایت" %}</a>
+                </p>
+
+            </div>
+
+          <input name="__RequestVerificationToken" type="hidden" value="CfDJ8DXlEtrZM-hGqQaFOCpkbmK69_AGrm0WIY0_vEMlK2-HVGUbHGSVOhCBM28cmPSUoNvXgac941_v4h7nwdMrg8beiSQ4RG72FcA30ABF0oD-cfi6K1xw626r63CkYhWPxgImwi7Kt69ug3cm_hq6pXA" /></form>
+
+        </form>
+        <div></div>
+    </div>
+</div>
+
+  {% endblock content %}
