@@ -17,7 +17,7 @@ from django.contrib.auth import (
 )
 # Local Apps
 from .decorators import anonymous_required
-from .models import User, Bookmark, Profile
+from .models import User, Profile
 from .forms import (
     UserLoginForm,
     UserRegisterForm,
@@ -30,7 +30,6 @@ from .forms import (
 )
 from .utils import send_verification_code
 from utils.paginator import paginator
-from blog.models import Post
 
 
 @login_required

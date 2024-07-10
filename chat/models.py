@@ -17,8 +17,8 @@ class Group(AbstractDateTimeModel):
     PUBLIC = 2
     
     GROUP_TYPE_CHOICES = (
-        (_('خصوصی'), PRIVATE),
-        (_('عمومی'), PUBLIC),
+        (PRIVATE, _('خصوصی'), ),
+        (PUBLIC, _('عمومی'), ),
     )
     
     uuid = models.UUIDField(
@@ -33,7 +33,7 @@ class Group(AbstractDateTimeModel):
     )
     member_limit = models.PositiveIntegerField(
         _("محدودیت اعضا"),
-        default=False,
+        default=0,
     )
     description = models.TextField(
         _("توضیحات"), 
@@ -86,13 +86,15 @@ class Group(AbstractDateTimeModel):
         verbose_name = _('گروه')
         verbose_name_plural = _('گروه ها')
         
-        
-    def get_avatar(self):
+    @property
+    def get_image(self):
         try:
             if self.image.url and self.image_thumbnail.url and self.image.file:
                 image = self.image_thumbnail.url
         except:
             image = settings.DEFAULT_GROUP_IMAGE_PATH
+            
+        print(image)
         return image
     
     
@@ -115,6 +117,7 @@ class GroupMember(AbstractDateTimeModel):
         Group, 
         verbose_name=_("گروه"), 
         on_delete=models.CASCADE,
+        related_name='members',
     )
     user_role = models.ForeignKey(
         Role, 

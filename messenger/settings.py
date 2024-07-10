@@ -72,7 +72,7 @@ MIDDLEWARE = [
     'auditlog.middleware.AuditlogMiddleware',
 ]
 
-ROOT_URLCONF = 'chat.urls'
+ROOT_URLCONF = 'messenger.urls'
 
 TEMPLATES = [
     {
@@ -209,7 +209,7 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-DEFAULT_GROUP_IMAGE_PATH = ''
+DEFAULT_GROUP_IMAGE_PATH = '/static/defaults/default.png'
 
 
 # Override Local Setting
