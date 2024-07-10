@@ -132,23 +132,6 @@ class MobilePhoneVerify(AbstractDateTimeModel):
         return str(self.mobile_number)
 
 
-class Bookmark(AbstractDateTimeModel):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name=_('کاربر')
-    )
-    post = models.ForeignKey(
-        "blog.Post",
-        on_delete=models.CASCADE,
-        verbose_name=_('پست')
-    )
-
-    class Meta:
-        verbose_name = _('لیست مطالعه')
-        verbose_name_plural = _("لیست های مطالعه")
-
-
 class Profile(AbstractDateTimeModel):
     user = models.OneToOneField(
         User,

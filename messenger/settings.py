@@ -90,7 +90,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'chat.asgi.application'
+ASGI_APPLICATION = 'messenger.asgi.application'
 
 
 # Database
@@ -209,10 +209,12 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+DEFAULT_GROUP_IMAGE_PATH = ''
+
 
 # Override Local Setting
 try:
     if os.environ.get('DJANGO_DEVELOPMENT'):
-        from chat.local_settings import *
+        from messenger.local_settings import *
 except ModuleNotFoundError:
     pass
