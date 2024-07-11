@@ -10,6 +10,8 @@ from utils.models import AbstractDateTimeModel
 # Third party Import 
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from smart_selects.db_fields import ChainedForeignKey
+
 
 class Group(AbstractDateTimeModel):
     
@@ -102,8 +104,34 @@ class Group(AbstractDateTimeModel):
 class Role(AbstractDateTimeModel):
     pass  
 
+
+
 class Link(AbstractDateTimeModel):
-    pass  
+    
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        verbose_name=_("کاربر"),
+        on_delete=models.CASCADE,
+    )
+    group = models.ForeignKey(
+        Group, 
+        verbose_name=_("گروه"), 
+        on_delete=models.CASCADE,
+        related_name='groupmember',
+    )
+    link = models.CharField(
+        _("لینک"), 
+        max_length=255,
+    )
+    
+    
+    def __str__(self) -> str:
+        return f'لینک {self.user.fullname} - گروه {self.group.name}'
+    
+    class Meta:
+        verbose_name = _('لینک')
+        verbose_name_plural = _('لینک ها')
+        
 
 
     
@@ -112,6 +140,7 @@ class GroupMember(AbstractDateTimeModel):
         settings.AUTH_USER_MODEL, 
         verbose_name=_("کاربر"), 
         on_delete=models.CASCADE,
+        # related_name='groupmember'
     )
     group = models.ForeignKey(
         Group, 
@@ -138,7 +167,8 @@ class GroupMember(AbstractDateTimeModel):
     class Meta:
         verbose_name = _('عضو گروه')
         verbose_name_plural = _('اعضای گروه ها')
-        
+        unique_together = ('user', 'group')
+
     
     
     

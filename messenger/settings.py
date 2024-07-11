@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'dynamic_raw_id',
     'adminsortable2',
     'jalali_date',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -172,6 +173,10 @@ AUDITLOG_DISABLE_ON_RAW_SAVE = False
 # Django Admin Interface  Configurations
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
+# phone number settings
+PHONENUMBER_DEFAULT_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'IR'
 
 
 # CKEditor  Configurations
