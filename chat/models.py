@@ -1,10 +1,19 @@
+from datetime import datetime
 from uuid import uuid4
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Permission
+from multiselectfield import MultiSelectField
+
+
+
+
 
 
 # Local Import
+from utils.datetime import check_and_make_aware
 from utils.models import AbstractDateTimeModel
 
 # Third party Import 
@@ -98,11 +107,13 @@ class Group(AbstractDateTimeModel):
             
         print(image)
         return image
-    
-    
-    
-class Role(AbstractDateTimeModel):
-    pass  
+
+
+
+# class Permission(AbstractDateTimeModel):
+#     name = models.CharField(
+#         _(""), max_length=50)
+
 
 
 
@@ -123,7 +134,38 @@ class Link(AbstractDateTimeModel):
         _("لینک"), 
         max_length=255,
     )
+    expired = models.DateTimeField(
+        _("تاریخ انقضا"), 
+        blank=True,
+        null=True,
+    )
+    member_limit = models.PositiveIntegerField(
+        _("محدودیت اعضا"),
+        default=0,
+        help_text=_('مقدار 0 به منظور بدون محدودیت است'),
+    )
+    joined_member = models.PositiveIntegerField(
+        _("تعداد کاربران عضو شده"),
+        default=0,
+    )
     
+    @property
+    def is_active(self):
+        if self.expired and (check_and_make_aware(datetime.now()) - self.expired).seconds > 0:
+            return {'message': _('لینک منقضی شده است.'), 'status': 404}
+        elif  self.member_limit >= self.joined_member:
+            return {'message': _('تعداد کاربران عضو شده بیشتر از حد مجاز است.'), 'status': 404}
+        
+        return {'status': 200,}
+    
+    
+    @property
+    def increase_joined_member(self,):
+        self.joined_member += 1
+        self.save()
+        return {'status': 200,}
+        
+        
     
     def __str__(self) -> str:
         return f'لینک {self.user.fullname} - گروه {self.group.name}'
@@ -136,6 +178,45 @@ class Link(AbstractDateTimeModel):
 
     
 class GroupMember(AbstractDateTimeModel):
+    
+    ADD_USER = 'add-user'
+    CHANGE_GROUP_INFO = 'change-group-info'
+    DELETE_MESSAGES = 'delete-messages'
+    BAN_USERS = 'ban-users'
+    INVITE_USERS = 'invite-users'
+    PIN_MESSAGES = 'pin-messages'
+    REMAIN_ANONYMOUS = 'remain-anonymous'
+    ADD_ADMIN = 'add-admin'
+    
+    
+    PERMISSION_CHOICES = (
+        (ADD_USER,'Add User',),
+        (CHANGE_GROUP_INFO, 'Change Group Info', ),
+        (DELETE_MESSAGES, 'Delete Messages', ),
+        (BAN_USERS, 'Ban Users', ),
+        (INVITE_USERS, 'Inviite Users Via Link', ),
+        (PIN_MESSAGES, 'Pin Messsges', ),
+        (REMAIN_ANONYMOUS, 'Remain Anonymous', ),
+        (ADD_ADMIN, 'Add New Admin', ),
+    )
+    
+    
+    
+    SEND_MESSAGES = 'send-messages'
+    ADD_MEMBER = 'add-member'
+    USER_PIN_MESSAGES = 'user-pin-messages'
+    USER_CHANGE_GROUP_INFO = 'user-change-group-info'
+
+    
+    
+    LIMITED_CHOICES = (
+        (SEND_MESSAGES, 'Send Messages'),
+        (ADD_MEMBER, 'Add Member'),
+        (USER_PIN_MESSAGES, 'Pin Messages'),
+        (CHANGE_GROUP_INFO, 'Change Group Info'),
+    )
+    
+    
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         verbose_name=_("کاربر"), 
@@ -148,12 +229,17 @@ class GroupMember(AbstractDateTimeModel):
         on_delete=models.CASCADE,
         related_name='members',
     )
-    user_role = models.ForeignKey(
-        Role, 
-        verbose_name=_("سطح دسترسی"), 
-        on_delete=models.CASCADE,
+    admin_permissions = MultiSelectField(
+        verbose_name=_("مجوزها"), 
         blank=True,
         null=True,
+        choices=PERMISSION_CHOICES
+    )
+    user_limited = MultiSelectField(
+        verbose_name=_("محدودیت ها"), 
+        blank=True,
+        null=True,
+        choices=LIMITED_CHOICES
     )
     link = models.ManyToManyField(
         Link, 

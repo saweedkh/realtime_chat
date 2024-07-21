@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 
 # local import 
-from chat.forms import LinkAdminForm
+from chat.forms import GroupMemberForm, LinkAdminForm
 from chat.models import Group, GroupMember, Link
 from utils.admin import DateTimeAdminMixin
 
@@ -13,6 +13,7 @@ from utils.admin import DateTimeAdminMixin
 
 
 class GroupMemberInlineAdmin(admin.TabularInline):
+    form = GroupMemberForm
     model = GroupMember
     extra = 0
     autocomplete_fields = ('link', 'user')
@@ -63,6 +64,7 @@ class GroupAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid', *DateTimeAdminMixin.readonly_fields, )
     inlines = (GroupMemberInlineAdmin,)
     autocomplete_fields = ('ban_list',)
+    search_fields = ('name',)
     
     @admin.display(description=_('تعداد اعضا'), empty_value='-')
     def member_count(self, obj):
@@ -86,21 +88,22 @@ class GroupAdmin(admin.ModelAdmin):
 @admin.register(GroupMember)    
 class GroupMemberAdmin(admin.ModelAdmin):
     
+    
+    
     fieldsets = (
         ('اطلاعات کاربر این گروه', {
             "fields": (
                 'user',
                 'group',
-                'user_role',
+                'admin_permissions',
                 'link',
             ),
         }),
     )
     
     list_filter = ('user', 'group')
-    
-    
-    
+    list_display = ('user', 'group', 'admin_permissions')
+ 
     def has_delete_permission(self, request, obj=None):
         return False
     
@@ -114,8 +117,32 @@ class GroupMemberAdmin(admin.ModelAdmin):
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
     
+    fieldsets = (
+        ("مشخصات لینک", {
+            "fields": (
+                'user',
+                'group',
+                'link',
+            ),
+        }),
+        
+        ("محدودیت ها", {
+            "fields": (
+                'member_limit',
+                'joined_member',
+                'expired',
+            ),
+        }),
+        *DateTimeAdminMixin.fieldsets,
+    )
+    
+    list_display = ('link', 'user', 'group',)
     search_fields = ('user__fullname', 'group__name', 'link')
+    readonly_fields = (*DateTimeAdminMixin.readonly_fields,)
+    autocomplete_fields = ('user', 'group',)
+    list_filter = ('group', 'user',)
 
     
     class Media:
         js = ('js/admin_link_form.js',)
+

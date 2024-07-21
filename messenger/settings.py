@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'jalali_date',
     'phonenumber_field',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [
